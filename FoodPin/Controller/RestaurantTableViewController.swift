@@ -48,7 +48,11 @@ class RestaurantTableViewController: UITableViewController ,UISearchResultsUpdat
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return restaurants.count
+        if searchController.isActive {
+            return searchResults.count
+        } else {
+            return restaurants.count
+        }
     }
     
     
@@ -58,12 +62,14 @@ class RestaurantTableViewController: UITableViewController ,UISearchResultsUpdat
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! RestaurantTableViewCell
         
         // Configure the cell...
-        cell.nameLabel.text = restaurants[indexPath.row].name //optioinal chaining
-        cell.locationLabel.text = restaurants[indexPath.row].location
-        cell.typeLabel.text = restaurants[indexPath.row].type
-        cell.thumbnailImageView.image = UIImage(named: restaurants[indexPath.row].image)
+        // Determine if we get the restaurant from search result or the original array
+        let restaurant = (searchController.isActive) ? searchResults[indexPath.row] : restaurants[indexPath.row]
+        cell.nameLabel.text = restaurant.name //optioinal chaining
+        cell.locationLabel.text = restaurant.location
+        cell.typeLabel.text = restaurant.type
+        cell.thumbnailImageView.image = UIImage(named: restaurant.image)
         
-        if restaurants[indexPath.row].isVisited {
+        if restaurant.isVisited {
             cell.accessoryType = .checkmark
         } else {
             cell.accessoryType = .none
@@ -75,6 +81,13 @@ class RestaurantTableViewController: UITableViewController ,UISearchResultsUpdat
         return cell
     }
     
+    override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
+        if searchController.isActive {
+            return false
+        } else {
+            return true
+        }
+    }
     
     //   override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     
@@ -202,8 +215,7 @@ class RestaurantTableViewController: UITableViewController ,UISearchResultsUpdat
         if segue.identifier == "showRestaurantDetail" {
             if let indexPath = tableView.indexPathForSelectedRow {
                 let destinationController = segue.destination as! RestaurantDetailViewController
-                destinationController.restaurant = restaurants[indexPath.row]
-            }
+                destinationController.restaurant = (searchController.isActive) ? searchResults[indexPath.row] : restaurants[indexPath.row]            }
         }
         else if segue.identifier == "addRestaurant" {
             let destinationController = segue.destination as! UINavigationController
@@ -270,7 +282,7 @@ class RestaurantTableViewController: UITableViewController ,UISearchResultsUpdat
             tableView.reloadData()
         }
     }
-
+    
 }
 
 
