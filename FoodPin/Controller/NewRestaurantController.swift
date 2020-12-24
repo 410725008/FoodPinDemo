@@ -12,9 +12,13 @@ protocol AddDataDelegate {
     func addRestaurant(item: Restaurant)
 }
 
-class NewRestaurantController: UITableViewController,UITextFieldDelegate,UIImagePickerControllerDelegate,UINavigationControllerDelegate{
+
+class NewRestaurantController: UITableViewController, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate
+ {
     
     var addDelegate: AddDataDelegate?
+    
+    var selectedImageName: String = ""
     
     @IBOutlet var nameTextField: RoundedTextField! {
         didSet {
@@ -53,26 +57,29 @@ class NewRestaurantController: UITableViewController,UITextFieldDelegate,UIImage
         }
     }
 
-    
-    
-    @IBOutlet var photoImageView: UIImageView!
-    
-    var selectedImageName: String?
+     @IBOutlet var photoImageView: UIImageView!
+
+    // var selectedImageName: String?
+
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // Configure navigation bar appearance
-        navigationController?.navigationBar.tintColor = .white
-        navigationController?.navigationBar.shadowImage = UIImage()
-        if let customFont = UIFont(name: "Rubik-Medium", size: 35.0) {
-            navigationController?.navigationBar.largeTitleTextAttributes = [ NSAttributedString.Key.foregroundColor: UIColor(red: 231/255, green: 76/255, blue: 60/255, alpha: 1), NSAttributedString.Key.font: customFont ]
-        }
-        // Disable the separator
-        tableView.separatorStyle = .none
+
+      
     }
     
-    // MARK: - UITableViewDelegate methods
-    
+    // MARK: - UITextFieldDelegate methods
+
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        if let nextTextField = view.viewWithTag(textField.tag + 1) {
+            textField.resignFirstResponder()
+            nextTextField.becomeFirstResponder()
+        }
+        
+        return true
+    }
+
+     // MARK: - UITableViewDelegate methods
+        
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.row == 0 {
             
@@ -115,6 +122,9 @@ class NewRestaurantController: UITableViewController,UITextFieldDelegate,UIImage
             
         }
     }
+    
+    // MARK: - ImagePickerController Delegate methods
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
         if let selectedImage = info[UIImagePickerController.InfoKey.originalImage] as? UIImage {
@@ -135,27 +145,16 @@ class NewRestaurantController: UITableViewController,UITextFieldDelegate,UIImage
         
         let bottomConstraint = NSLayoutConstraint(item: photoImageView as Any, attribute: .bottom, relatedBy: .equal, toItem: photoImageView.superview, attribute: .bottom, multiplier: 1, constant: 0)
         bottomConstraint.isActive = true
+        
+        
         // get the selectedImageName
         if let url = info[UIImagePickerController.InfoKey.imageURL] as? URL {
-        selectedImageName = url.path
-        print(selectedImageName)
+            selectedImageName = url.path
+            print(selectedImageName)
         }
         
         
         dismiss(animated: true, completion: nil)
-    }
-    // MARK: - UITextFieldDelegate methods
-    
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        if let nextTextField = view.viewWithTag(textField.tag + 1) {
-            textField.resignFirstResponder()
-            nextTextField.becomeFirstResponder()
-        }
-        
-        return true
-    }
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.view.endEditing(true)
     }
     
     @IBAction func saveButtonTapped(sender: AnyObject) {
@@ -169,10 +168,12 @@ class NewRestaurantController: UITableViewController,UITextFieldDelegate,UIImage
             return
         }
         
-        let newValue = Restaurant(name: nameTextField.text!, type: typeTextField.text!, location: addressTextField.text!, phone: phoneTextField.text!, summary: descriptionTextView.text!, image: selectedImageName!, isVisited: false)
+        let newValue = Restaurant(name: nameTextField.text!, type: typeTextField.text!, location: addressTextField.text!, phone: phoneTextField.text!, summary: descriptionTextView.text!, image: selectedImageName, isVisited: false)
         
         addDelegate?.addRestaurant(item: newValue)
         
         dismiss(animated: true, completion: nil)
     }
+
+ 
 }

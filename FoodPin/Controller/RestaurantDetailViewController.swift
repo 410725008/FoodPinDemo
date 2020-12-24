@@ -14,6 +14,7 @@ class RestaurantDetailViewController: UIViewController, UITableViewDataSource, U
     @IBOutlet var headerView: RestaurantDetailHeaderView!
     
     var restaurant = Restaurant()
+
     
     // MARK: - Table view data source
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -28,14 +29,16 @@ class RestaurantDetailViewController: UIViewController, UITableViewDataSource, U
                     
         case 0:
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RestaurantDetailIconTextCell.self), for: indexPath) as! RestaurantDetailIconTextCell
-        cell.iconImageView.image = UIImage(systemName: "phone")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+//        cell.iconImageView.image = UIImage(systemName: "phone")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        cell.iconImageView.image = UIImage(named: "phone")
         cell.shortTextLabel.text = restaurant.phone
         cell.selectionStyle = .none
                     
         return cell
         case 1:
         let cell = tableView.dequeueReusableCell(withIdentifier: String(describing: RestaurantDetailIconTextCell.self), for: indexPath) as! RestaurantDetailIconTextCell
-        cell.iconImageView.image = UIImage(systemName: "map")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+//        cell.iconImageView.image = UIImage(systemName: "map")?.withTintColor(.black, renderingMode: .alwaysOriginal)
+        cell.iconImageView.image = UIImage(named: "map")
         cell.shortTextLabel.text = restaurant.location
         cell.selectionStyle = .none
                     
@@ -78,7 +81,9 @@ class RestaurantDetailViewController: UIViewController, UITableViewDataSource, U
         headerView.typeLabel.text = restaurant.type
         headerView.headerImageView.image = UIImage(named: restaurant.image)
         headerView.heartImageView.isHidden = (restaurant.isVisited) ? false : true
-        headerView.ratingImageView.image = UIImage(named: restaurant.rating)
+        if !restaurant.rating.isEmpty {
+            headerView.ratingImageView.image = UIImage(named: restaurant.rating)
+        }
 
         tableView.delegate = self
         tableView.dataSource = self
