@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import SafariServices
 class AboutMeController: UITableViewController {
     
     var sectionContent = [

@@ -53,10 +53,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     }
     
     func saveData() {
-        let navigationController = window!.rootViewController as! UINavigationController
-        let controller = navigationController.viewControllers[0] as! RestaurantTableViewController
+       // let tabBarController = window!.rootViewController as! UITabBarController
+       // let navigationController = tabBarController.viewController?[0] as! UINavigationController controller.saveRestaurants()
+        
+        //let navigationController = window!.rootViewController as! UINavigationController
+        //let controller = navigationController.viewControllers[0] as! RestaurantTableViewController
         //or navigationController.topViewController
-        controller.saveRestaurants()
+        //controller.saveRestaurants()
     }
 
 }
